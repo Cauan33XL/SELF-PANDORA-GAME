@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full w-full select-none">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="O Self de Pandora - Um jogo de plataforma 3D psicológico, abstrato e atmosférico sobre autodescoberta." />
+    <link rel="icon" type="image/png" href="/icons/favicon.png" />
+    <title>O Self de Pandora | Plataforma Psicológica 3D</title>
+  </head>
+  <body class="bg-[#0c0c0e] text-[#e2e2e7] w-full h-full overflow-hidden m-0 p-0 font-sans antialiased">
+    
+    <!-- Efeito de Tela CRT Retro -->
+    <div id="crt-overlay" class="absolute inset-0 pointer-events-none z-50 transition-opacity duration-300"></div>
+
+    <!-- Container Principal do App -->
+    <div id="app" class="relative w-full h-full flex justify-center items-center overflow-hidden">
+      
+      <!-- Container do Canvas do Three.js (3D) -->
+      <div id="game-container" class="absolute inset-0 w-full h-full z-0 bg-radial from-[#121215] to-[#040405]"></div>
+
+      <!-- Overlays da Interface do Usuário (UI) -->
+      <div id="ui-layer" class="absolute inset-0 z-10 pointer-events-none flex flex-col justify-center items-center w-full h-full">
+        
+        <!-- ================= TELA 0: CARREGAMENTO POÉTICO ================= -->
+        <div id="loading-screen" class="screen active pointer-events-auto flex flex-col justify-center items-center w-full h-full transition-all duration-1000 bg-[#0c0c0e]/95 z-50">
+          <div class="glass-panel max-w-md w-[85%] p-10 text-center border border-white/5 bg-zinc-950/80 backdrop-blur-2xl rounded-2xl shadow-2xl flex flex-col items-center gap-6">
+            <div class="relative w-16 h-16 flex items-center justify-center">
+              <div class="absolute inset-0 rounded-full border border-cyan-500/30 animate-ping"></div>
+              <div class="absolute w-12 h-12 rounded-full border border-purple-500/40 bg-purple-950/20 shadow-[0_0_15px_rgba(217,70,239,0.2)] flex items-center justify-center">
+                <span class="w-4 h-4 rounded-full bg-[#06b6d4] shadow-[0_0_8px_#06b6d4]"></span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2 w-full">
+              <h2 class="text-xl sm:text-2xl font-extralight tracking-[0.3em] text-white uppercase pl-[0.3em]">
+                O Self de Pandora
+              </h2>
+              <div class="h-[1px] w-12 bg-white/20 mx-auto my-1"></div>
+              <p id="loading-status-text" class="text-[10px] text-zinc-400 uppercase tracking-[0.25em] font-light">
+                Estabelecendo conexões neurais...
+              </p>
+            </div>
+
+            <div class="w-full relative h-[3px] bg-white/5 rounded-full overflow-hidden border border-white/5">
+              <div id="loading-progress-bar" class="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-cyan-400 transition-all duration-300 shadow-[0_0_8px_rgba(6,182,212,0.4)]" style="width: 0%;"></div>
+            </div>
+            
+            <p id="loading-poetic-quote" class="font-serif italic text-xs text-zinc-500 leading-relaxed mt-2 max-w-[280px]">
+              "As sombras dão forma às memórias..."
+            </p>
+          </div>
+        </div>
+
+        <!-- ================= telA 1: MENU PRINCIPAL ================= -->
+        <div id="menu-screen" class="screen pointer-events-none flex flex-col justify-center items-center w-full h-full transition-all duration-700">
+          <div class="glass-panel menu-container flex flex-col items-center max-w-xl w-[90%] p-12 text-center border border-white/5 bg-zinc-950/70 backdrop-blur-xl rounded-2xl shadow-2xl scale-100 transition-transform duration-500">
+            <h1 class="game-title text-4xl sm:text-5xl font-extralight tracking-[0.35em] text-white uppercase text-shadow-lg mb-2 pl-[0.35em]">
+              O Self de Pandora
+            </h1>
+            <p class="game-subtitle font-serif italic text-zinc-400 mb-12 tracking-wide">
+              uma jornada de aceitação e autodescoberta
+            </p>
+
+            <div class="menu-options flex flex-col gap-4 w-full max-w-xs">
+              <button id="btn-start-game" class="btn-surreal w-full py-4 text-xs font-semibold uppercase tracking-[0.2em] border border-white/10 hover:border-white/40 rounded-lg bg-white/5 hover:bg-white/10 text-white cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                Iniciar Jornada
+              </button>
+              <button id="btn-open-diary" class="btn-surreal w-full py-4 text-xs font-semibold uppercase tracking-[0.2em] border border-white/10 hover:border-white/40 rounded-lg bg-white/5 hover:bg-white/10 text-white cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                Diário do Self
+              </button>
+              <button id="btn-open-credits" class="btn-surreal w-full py-4 text-xs font-semibold uppercase tracking-[0.2em] border border-white/10 hover:border-white/40 rounded-lg bg-white/5 hover:bg-white/10 text-white cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                Créditos
+              </button>
+            </div>
+            
+            <div class="text-[10px] text-zinc-500 mt-12 tracking-widest uppercase">
+              Sic Mundus Creatus Est
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= telA 2: SELETOR DE FASES (MAPA DE SINAPSES) ================= -->
+        <div id="level-screen" class="screen pointer-events-none flex flex-col justify-start items-center w-full h-full p-10 transition-all duration-700">
+          <div class="level-header text-center mb-6 z-10 pointer-events-auto">
+            <h2 class="level-title text-2xl font-light tracking-[0.2em] text-white uppercase mb-1">
+              Mapa de Sinapses
+            </h2>
+            <p class="level-subtitle font-serif italic text-zinc-400 text-xs">
+              navegue pela rede neural de Pandora para reintegrar suas memórias
+            </p>
+          </div>
+
+          <!-- Container do Mapa Neural -->
+          <div class="synapse-map-container pointer-events-auto relative w-[95%] max-w-6xl h-[65%] overflow-x-auto overflow-y-hidden border border-white/5 rounded-2xl shadow-inner select-none flex items-center">
+            <div id="synapse-network" class="relative w-[3400px] h-full flex items-center">
+              <!-- Camada de Conexões em Linhas SVG -->
+              <svg id="synapse-svg" class="synapse-svg-layer absolute inset-0 w-full h-full pointer-events-none z-0"></svg>
+              <!-- Os nós dinâmicos das sinapses serão gerados aqui via JS -->
+            </div>
+          </div>
+
+          <!-- Rodapé do Seletor de Fases -->
+          <div class="level-footer flex gap-8 z-10 pointer-events-auto mt-6">
+            <button id="btn-level-back" class="btn-surreal px-8 py-3 text-xs font-medium uppercase tracking-widest border border-white/10 rounded-lg hover:bg-white/5 transition-all">
+              Voltar ao Menu
+            </button>
+            <button id="btn-reset-progress" class="btn-surreal px-6 py-3 text-xs font-medium uppercase tracking-widest border border-red-500/20 text-red-400 hover:text-red-300 hover:border-red-500/50 rounded-lg hover:bg-red-950/20 transition-all">
+              Resetar Progresso
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= telA 3: HUD DA PARTIDA ================= -->
+        <div id="hud-overlay" class="screen pointer-events-none flex flex-col justify-between w-full h-full p-8 transition-all duration-500">
+          <!-- Cabeçalho HUD -->
+          <div class="flex justify-between items-start w-full pointer-events-none">
+            <!-- Esquerda: Fase e Emoção -->
+            <div class="hud-left flex flex-col gap-1 pointer-events-auto">
+              <h3 id="hud-level-num" class="text-sm font-semibold tracking-wider text-white uppercase">
+                Fase 1: Sycamore Valley
+              </h3>
+              <p id="hud-level-tag" class="font-serif italic text-xs text-zinc-400">
+                Normalidade
+              </p>
+            </div>
+
+            <!-- Direita: Pensamentos Coletados e Recarga da Onda -->
+            <div class="hud-right flex gap-8 items-center pointer-events-auto">
+              <div class="flex items-center gap-2 text-sm font-medium">
+                <span class="reminiscence-icon w-2.5 h-2.5 rounded-full bg-[#06b6d4] shadow-[0_0_8px_#06b6d4]"></span>
+                <span id="hud-reminiscence">Pensamentos: 0 / 3</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-xs uppercase tracking-wider text-zinc-400">Onda de Lucidez:</span>
+                <div class="relative w-28 h-1.5 bg-white/10 rounded-full overflow-hidden border border-white/5">
+                  <div id="hud-wave-cooldown-bar" class="h-full bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-100" style="width: 100%;"></div>
+                </div>
+                <span id="hud-wave-status" class="text-[10px] tracking-widest uppercase font-semibold text-cyan-400">Pronta (E)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Centro: Subtítulos e Pensamentos Poéticos -->
+          <div id="thoughts-overlay" class="absolute inset-0 pointer-events-none w-full h-full z-0 flex flex-col justify-center items-center">
+            <!-- Subtítulos e textos flutuantes serão injetados dinamicamente aqui -->
+          </div>
+
+          <!-- Rodapé HUD: Comandos e Menu de Fases -->
+          <div class="flex justify-between items-center w-full mt-auto pointer-events-auto">
+            <div class="text-[10px] tracking-widest uppercase text-zinc-500">
+              A/D ou ◄/► Rotacionar • W/S Mover • ESPAÇO Devaneio • E Lucidez • C Câmera
+            </div>
+            <button id="btn-exit-to-selector" class="btn-surreal px-6 py-2.5 text-[10px] font-semibold uppercase tracking-widest border border-white/10 rounded-lg hover:bg-white/5 transition-all">
+              ESC: Sair da Fase
+            </button>
+          </div>
+
+          <!-- Radar HUD Container (canto inferior esquerdo) -->
+          <div id="radar-container" class="absolute bottom-20 left-8 w-36 h-36 border border-white/10 rounded-full bg-zinc-950/60 backdrop-blur-md overflow-hidden pointer-events-auto flex items-center justify-center shadow-lg transition-all duration-300">
+            <canvas id="radar-canvas" width="144" height="144" class="w-full h-full"></canvas>
+            <!-- Linhas de Grid do Radar -->
+            <div class="absolute inset-0 rounded-full border border-cyan-500/10 pointer-events-none scale-75"></div>
+            <div class="absolute inset-0 rounded-full border border-cyan-500/10 pointer-events-none scale-50"></div>
+            <div class="absolute inset-0 rounded-full border border-cyan-500/10 pointer-events-none scale-25"></div>
+            <div class="absolute top-1/2 left-0 w-full h-[1px] bg-white/5 -translate-y-1/2"></div>
+            <div class="absolute left-1/2 top-0 h-full w-[1px] bg-white/5 -translate-x-1/2"></div>
+            <!-- Efeito de Varredura -->
+            <div class="radar-sweep absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-cyan-500/10 to-transparent pointer-events-none"></div>
+          </div>
+        </div>
+
+        <!-- ================= telA 4: DIÁRIO DO SELF ================= -->
+        <div id="diary-screen" class="screen pointer-events-none flex flex-col justify-center items-center w-full h-full p-10 transition-all duration-700">
+          <div class="glass-panel diary-container flex flex-col w-[90%] max-w-4xl h-[80%] p-10 border border-white/5 bg-zinc-950/75 backdrop-blur-xl rounded-2xl shadow-2xl transition-transform duration-500">
+            
+            <div class="diary-header flex justify-between items-center mb-8 pb-4 border-b border-white/5">
+              <h2 class="diary-title text-xl font-light tracking-[0.25em] text-white uppercase">
+                Diário do Self
+              </h2>
+              <button id="btn-close-diary" class="btn-surreal px-6 py-2 text-xs font-semibold uppercase tracking-widest border border-white/10 hover:border-white/30 rounded-lg hover:bg-white/5 transition-all">
+                Fechar Diário
+              </button>
+            </div>
+
+            <div class="diary-layout flex gap-8 flex-1 overflow-hidden h-full">
+              <!-- Esquerda: Lista de Fase Recolhidas -->
+              <div id="diary-stages-list" class="diary-list w-[35%] overflow-y-auto pr-4 border-r border-white/5 flex flex-col gap-2 select-none">
+                <!-- Injetado dinamicamente -->
+              </div>
+
+              <!-- Direita: Página de Pensamentos -->
+              <div id="diary-content-panel" class="diary-content w-[65%] overflow-y-auto pl-6 flex flex-col justify-center items-center text-center">
+                <!-- Exibe reflexão poética da fase -->
+                <div class="font-serif italic text-zinc-400 text-sm max-w-md">
+                  Selecione uma fase desbloqueada à esquerda para ler as reflexões íntimas de Pandora.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= telA 5: CRÉDITOS ================= -->
+        <div id="credits-screen" class="screen pointer-events-none flex flex-col justify-center items-center w-full h-full p-10 transition-all duration-700">
+          <div class="glass-panel flex flex-col items-center max-w-xl w-[90%] p-12 text-center border border-white/5 bg-zinc-950/75 backdrop-blur-xl rounded-2xl shadow-2xl transition-transform duration-500">
+            <h2 class="text-2xl font-light tracking-[0.25em] text-white uppercase mb-8 border-b border-white/5 pb-4 w-full">
+              Créditos da Mente
+            </h2>
+            
+            <div class="flex flex-col gap-6 text-sm text-zinc-300 max-h-[300px] overflow-y-auto w-full pr-2">
+              <div>
+                <h4 class="font-serif italic text-zinc-400 text-xs tracking-wider uppercase mb-1">Poesia e Conceito</h4>
+                <p class="font-light">O Self de Pandora — Jogo de Plataforma Psicológico</p>
+              </div>
+              <div>
+                <h4 class="font-serif italic text-zinc-400 text-xs tracking-wider uppercase mb-1">Tecnologias</h4>
+                <p class="font-light text-cyan-400">Three.js • Web Audio API • Tailwind CSS 4.0</p>
+              </div>
+              <div>
+                <h4 class="font-serif italic text-zinc-400 text-xs tracking-wider uppercase mb-1">Referências Estéticas</h4>
+                <p class="font-light text-purple-400">Sic Mundus Creatus Est • Detetive Evan Brecht</p>
+                <p class="text-xs text-zinc-500 mt-1">"O Zebrão que repele o medo nas colinas de Sycamore Valley"</p>
+              </div>
+            </div>
+
+            <button id="btn-close-credits" class="btn-surreal w-full mt-10 py-3 text-xs font-semibold uppercase tracking-[0.2em] border border-white/10 rounded-lg hover:bg-white/5 transition-all">
+              Voltar ao Menu
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Rodapé Estático de Controle de Áudio / Efeitos -->
+      <div class="absolute bottom-6 left-8 z-20 pointer-events-auto flex items-center gap-6 text-[10px] tracking-widest text-zinc-500 uppercase">
+        <span>© 2026 self-pandora</span>
+      </div>
+
+      <div class="absolute bottom-6 right-8 z-20 pointer-events-auto flex items-center gap-3">
+        <!-- Camera Mode Toggle Button -->
+        <button id="btn-toggle-camera" class="camera-toggle flex items-center justify-center w-10 h-10 rounded-full border border-white/10 hover:border-white/30 text-zinc-400 hover:text-white bg-zinc-950/40 backdrop-blur transition-all duration-300 cursor-pointer shadow-lg" title="Alternar Câmera (1ª / 3ª Pessoa)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </button>
+
+        <!-- CRT Shader Toggle Button -->
+        <button id="btn-toggle-crt" class="crt-toggle flex items-center justify-center w-10 h-10 rounded-full border border-white/10 hover:border-white/30 text-zinc-400 hover:text-white bg-zinc-950/40 backdrop-blur transition-all duration-300 cursor-pointer shadow-lg active" title="Alternar Filtro CRT">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
+            <rect x="2" y="3" width="20" height="15" rx="2" />
+            <line x1="12" y1="18" x2="12" y2="21" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+          </svg>
+        </button>
+
+        <!-- Audio Mute/Unmute Toggle Button -->
+        <button id="btn-toggle-audio" class="audio-toggle flex items-center justify-center w-10 h-10 rounded-full border border-white/10 hover:border-white/30 text-zinc-400 hover:text-white bg-zinc-950/40 backdrop-blur transition-all duration-300 cursor-pointer shadow-lg" title="Ativar/Mudar Som">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 audio-icon-muted">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

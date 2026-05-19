@@ -1,0 +1,618 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Realidade Colors */
+  --bg-reality: #0c0c0e;
+  --bg-reality-accent: #1e1e24;
+  --text-reality: #e2e2e7;
+  --text-reality-muted: #84838e;
+  --border-reality: rgba(255, 255, 255, 0.08);
+  
+  /* Devaneio Colors */
+  --bg-reverie: #100619;
+  --bg-reverie-accent: #210d33;
+  --text-reverie: #fceeff;
+  --text-reverie-muted: #b89dbf;
+  --border-reverie: rgba(217, 70, 239, 0.15);
+  
+  /* Common glow accents */
+  --accent-neon-violet: #d946ef;
+  --accent-neon-cyan: #06b6d4;
+  --accent-shadow-red: #ef4444;
+  
+  /* Transitions */
+  --transition-slow: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --transition-medium: all 0.3s ease;
+  --transition-fast: all 0.15s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-reality);
+  color: var(--text-reality);
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.8s ease, color 0.8s ease;
+}
+
+body.state-reverie {
+  background-color: var(--bg-reverie);
+  color: var(--text-reverie);
+}
+
+/* Glassmorphism General Panels */
+.glass-panel {
+  background: rgba(12, 12, 14, 0.68);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-reality);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
+  transition: var(--transition-slow);
+}
+
+.state-reverie .glass-panel {
+  background: rgba(24, 10, 36, 0.68);
+  border: 1px solid var(--border-reverie);
+  box-shadow: 0 12px 40px 0 rgba(217, 70, 239, 0.08);
+}
+
+/* Telas (Screens) */
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: scale(0.97);
+  z-index: 1;
+}
+
+.screen.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+  z-index: 10;
+}
+
+/* Custom Typography Shadows */
+.text-shadow-lg {
+  text-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+}
+
+.state-reverie .text-shadow-lg {
+  text-shadow: 0 0 25px rgba(217, 70, 239, 0.4);
+}
+
+/* Buttons System */
+.btn-surreal {
+  font-family: 'Outfit', sans-serif;
+  transition: var(--transition-medium);
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-surreal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  transition: var(--transition-medium);
+}
+
+.btn-surreal:hover::before {
+  left: 100%;
+  transition: 0.8s ease;
+}
+
+.btn-surreal:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.state-reverie .btn-surreal {
+  border-color: rgba(217, 70, 239, 0.2);
+}
+
+.state-reverie .btn-surreal:hover {
+  background: rgba(217, 70, 239, 0.12);
+  border-color: var(--accent-neon-violet);
+  box-shadow: 0 0 15px rgba(217, 70, 239, 0.25);
+}
+
+/* Seletor de Fases: Container do Mapa de Sinapses */
+.synapse-map-container {
+  background: 
+    radial-gradient(ellipse at 30% 20%, rgba(6, 182, 212, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(217, 70, 239, 0.04) 0%, transparent 50%),
+    linear-gradient(180deg, #09090b 0%, #0d0d10 50%, #09090b 100%);
+  background-size: 100% 100%;
+}
+
+.state-reverie .synapse-map-container {
+  background: 
+    radial-gradient(ellipse at 30% 20%, rgba(217, 70, 239, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, #10071c 0%, #160a26 50%, #10071c 100%);
+}
+
+.synapse-map-container::-webkit-scrollbar {
+  height: 6px;
+}
+.synapse-map-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.synapse-map-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+}
+.state-reverie .synapse-map-container::-webkit-scrollbar-thumb {
+  background: rgba(217, 70, 239, 0.15);
+}
+
+/* Synapse Node Styling */
+.synapse-node {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 10;
+  background: radial-gradient(circle at 30% 30%, #1a1a22 0%, #0a0a0d 70%);
+  border: 2px solid rgba(132, 131, 142, 0.35);
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.5),
+    inset 0 1px 2px rgba(255, 255, 255, 0.08),
+    0 0 20px rgba(132, 131, 142, 0.05);
+  color: var(--text-reality-muted);
+}
+
+.synapse-node::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.synapse-node:hover::before {
+  opacity: 1;
+}
+
+.synapse-node.completed {
+  border-color: var(--accent-neon-cyan);
+  color: var(--accent-neon-cyan);
+  box-shadow: 
+    0 0 20px rgba(6, 182, 212, 0.4),
+    0 0 40px rgba(6, 182, 212, 0.15),
+    inset 0 0 15px rgba(6, 182, 212, 0.15);
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0.01) 70%);
+}
+
+.synapse-node.completed::after {
+  content: '';
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  animation: ripple 2s ease-out infinite;
+}
+
+.synapse-node.active {
+  border-color: #ffffff;
+  color: #ffffff;
+  background: 
+    radial-gradient(circle at 30% 30%, #35353f 0%, #15151a 70%);
+  box-shadow: 
+    0 0 25px rgba(255, 255, 255, 0.5),
+    0 0 50px rgba(255, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.08);
+  animation: neural-pulse 1.5s ease-in-out infinite;
+}
+
+.synapse-node.active::after {
+  content: '';
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  animation: ripple-active 1s ease-out infinite;
+}
+
+.state-reverie .synapse-node.active {
+  border-color: var(--accent-neon-violet);
+  color: var(--text-reverie);
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(217, 70, 239, 0.25) 0%, rgba(26, 12, 46, 0.75) 70%);
+  box-shadow: 
+    0 0 25px rgba(217, 70, 239, 0.5),
+    0 0 50px rgba(217, 70, 239, 0.25),
+    inset 0 0 20px rgba(217, 70, 239, 0.15);
+}
+
+.state-reverie .synapse-node.active::after {
+  border-color: rgba(217, 70, 239, 0.4);
+}
+
+.synapse-node.locked {
+  opacity: 0.25;
+  cursor: not-allowed;
+  border-color: rgba(51, 50, 58, 0.4);
+  color: rgba(74, 73, 85, 0.5);
+  background: #050506;
+  box-shadow: none;
+}
+
+.synapse-node.locked::before {
+  display: none;
+}
+
+.synapse-node:hover:not(.locked) {
+  transform: translate(-50%, -50%) scale(1.18);
+  z-index: 15;
+}
+
+.synapse-node:hover:not(.locked).completed {
+  box-shadow: 
+    0 0 30px rgba(6, 182, 212, 0.5),
+    0 0 60px rgba(6, 182, 212, 0.25);
+}
+
+.synapse-node:hover:not(.locked).active {
+  box-shadow: 
+    0 0 35px rgba(255, 255, 255, 0.6),
+    0 0 70px rgba(255, 255, 255, 0.25);
+}
+
+.state-reverie .synapse-node:hover:not(.locked).active {
+  box-shadow: 
+    0 0 35px rgba(217, 70, 239, 0.7),
+    0 0 70px rgba(217, 70, 239, 0.35);
+}
+
+/* Tooltip do Nó */
+.node-tooltip {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.92);
+  pointer-events: none;
+  opacity: 0;
+  width: 220px;
+  padding: 10px 14px;
+  text-align: center;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 20;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: linear-gradient(180deg, #16161c 0%, #0e0e11 100%);
+}
+
+.synapse-node:hover .node-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.tooltip-title {
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.tooltip-tag {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 0.72rem;
+  color: var(--accent-neon-violet);
+  text-shadow: 0 0 8px rgba(217, 70, 239, 0.3);
+}
+
+/* Camada SVG de Conexões */
+.synapse-svg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.synapse-svg-layer line {
+  stroke: rgba(255, 255, 255, 0.04);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  transition: all 0.5s ease;
+}
+
+.synapse-svg-layer line.active-path {
+  stroke: rgba(255, 255, 255, 0.22);
+  stroke-width: 2.5;
+  stroke-dasharray: 8 4;
+  animation: flow-pulse 2s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(255,255,255,0.25));
+}
+
+.synapse-svg-layer line.completed-path {
+  stroke: rgba(6, 182, 212, 0.25);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 2px rgba(6, 182, 212, 0.2));
+}
+
+.state-reverie .synapse-svg-layer line.active-path {
+  stroke: rgba(217, 70, 239, 0.3);
+  filter: drop-shadow(0 0 3px rgba(217, 70, 239, 0.3));
+}
+
+.state-reverie .synapse-svg-layer line.completed-path {
+  stroke: rgba(6, 182, 212, 0.3);
+  filter: drop-shadow(0 0 2px rgba(6, 182, 212, 0.25));
+}
+
+/* Partida: Pensamentos Poéticos Flutuantes e Máquina de Escrever */
+.floating-thought {
+  position: absolute;
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: rgba(245, 238, 251, 0.8);
+  transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  z-index: 30;
+}
+
+.state-reverie .floating-thought {
+  color: rgba(252, 238, 255, 0.9);
+}
+
+.story-subtitle {
+  position: absolute;
+  bottom: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Lora', serif;
+  font-size: 1.3rem;
+  font-style: italic;
+  text-align: center;
+  width: 80%;
+  max-width: 700px;
+  color: #f5eefb;
+  text-shadow: 0 2px 15px rgba(0,0,0,0.9);
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+/* Diário do Self */
+.diary-list::-webkit-scrollbar,
+.diary-content::-webkit-scrollbar {
+  width: 5px;
+}
+.diary-list::-webkit-scrollbar-track,
+.diary-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.diary-list::-webkit-scrollbar-thumb,
+.diary-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+}
+.state-reverie .diary-list::-webkit-scrollbar-thumb,
+.state-reverie .diary-content::-webkit-scrollbar-thumb {
+  background: rgba(217, 70, 239, 0.15);
+}
+
+.diary-item {
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition-medium);
+  font-size: 0.82rem;
+  border: 1px solid transparent;
+  color: var(--text-reality-muted);
+}
+
+.diary-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+}
+
+.diary-item.selected {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.state-reverie .diary-item.selected {
+  background: rgba(217, 70, 239, 0.1);
+  border-color: rgba(217, 70, 239, 0.18);
+  color: var(--text-reverie);
+}
+
+.diary-poetry {
+  white-space: pre-wrap;
+  font-style: italic;
+  animation: diary-fade 0.5s ease-out;
+}
+
+/* --- Filtro CRT Retro --- */
+#crt-overlay {
+  background: 
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%), 
+    linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+  background-size: 100% 4px, 6px 100%;
+  opacity: 0;
+  z-index: 9999;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#crt-overlay.crt-active {
+  opacity: 1;
+}
+
+#crt-overlay::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: radial-gradient(circle, rgba(0,0,0,0) 65%, rgba(0,0,0,0.35) 100%);
+  z-index: 10000;
+  pointer-events: none;
+}
+
+body.crt-flicker #crt-overlay {
+  animation: crt-glow-flicker 0.15s infinite;
+}
+
+/* Toggles Floating */
+.crt-toggle.active {
+  color: var(--accent-neon-cyan);
+  border-color: var(--accent-neon-cyan);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+}
+
+/* Animations */
+@keyframes neural-pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes ripple-active {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes flow-pulse {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 24;
+  }
+}
+
+@keyframes crt-glow-flicker {
+  0% { opacity: 0.98; }
+  50% { opacity: 1.0; }
+  100% { opacity: 0.99; }
+}
+
+@keyframes diary-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Cinematic B&W Reality and Colorful Reverie transition filter */
+#game-container {
+  filter: grayscale(1) contrast(1.15) brightness(0.9);
+  transition: filter 1s ease-in-out;
+}
+
+body.state-reverie #game-container {
+  filter: none;
+}
+
+/* Radar Sweep and Camera Toggle Button Styles */
+.radar-sweep {
+  animation: radar-rotate-sweep 3.5s linear infinite;
+  transform-origin: center center;
+}
+
+@keyframes radar-rotate-sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.camera-toggle.active {
+  color: var(--accent-neon-violet);
+  border-color: var(--accent-neon-violet);
+  box-shadow: 0 0 12px rgba(217, 70, 239, 0.3);
+}
+
+.state-reverie #radar-container {
+  border-color: var(--border-reverie);
+  box-shadow: 0 0 15px rgba(217, 70, 239, 0.1);
+}
+
