@@ -1,7 +1,7 @@
 # O Self de Pandora
 
 > **"Eu não preciso te eliminar. Você é parte de quem eu sou."**  
-> *Um jogo de plataforma 2D psicológico, abstrato e atmosférico sobre a jornada de integrar as próprias fragilidades.*
+> *Um jogo de exploração e plataforma 3D psicológico, abstrato e atmosférico sobre a jornada de integrar as próprias fragilidades.*
 
 ---
 
@@ -17,13 +17,13 @@ O jogo se divide em **33 fases** baseadas em estados de espírito (como *Dúvida
 
 ## 🎨 Design e Estética Premium
 
-A interface de *O Self de Pandora* foi construída para causar impacto visual e sonoro imediato, utilizando técnicas modernas de web design:
+A interface e o ambiente de *O Self de Pandora* foram construídos para causar impacto visual e sonoro imediato, utilizando técnicas modernas de web design e renderização 3D em tempo real com **Three.js**:
 
 *   **Tipografia Curada**: Uso harmônico das fontes **Outfit** (para títulos limpos, modernos e ligeiramente espaçados) e **Lora** (uma serifada elegante e reflexiva para textos de história e o diário de memórias).
 *   **Filtros Glassmorphic**: Painéis translúcidos com efeito de vidro fosco (`backdrop-filter: blur`), bordas finas e brilhantes e sombras suaves que destacam o HUD e o Diário sem quebrar o clima melancólico do jogo.
-*   **Iluminação Dinâmica e Foco**: A tela do jogo é constantemente coberta por uma máscara de escuridão profunda (com opacidade acentuada em fases de *Ansiedade/Dúvida*), recortando uma lanterna suave radial ao redor de Pandora, representando sua auto-percepção.
-*   **Vignette & Efeitos de Glitch**: Um filtro cinemático escurece os cantos do Canvas. Em caso de contato com a Sombra no *Devaneio*, a tela sofre uma violenta desestabilização gráfica (*RGB color shift*, fatias horizontais deslocadas e estática analógica de white noise).
-*   **Ondas de Fundo Fluidas**: No Menu Principal, o Canvas renderiza ondas senoidais translúcidas em tempo real que se movem de forma hipnótica, criando uma atmosfera contemplativa.
+*   **Ambiente 3D Imersivo**: Uma abóbada celeste dinâmica (Sky Sphere) com texturas de dia/noite que alternam entre a *Realidade* e o *Devaneio*, além de uma névoa espessa e partículas ambientais que dançam ao sabor do vento procedimental.
+*   **Iluminação e Pós-processamento**: Uso de iluminação direcional e fontes de luz pontuais coloridas (púrpura e ciano) que mudam de cor e intensidade dinamicamente. Efeitos de pós-processamento aplicados através de `EffectComposer`, incluindo um brilho difuso intenso (`UnrealBloomPass`) que realça o ambiente no modo Devaneio.
+*   **Efeito CRT Retrô & Glitch**: Uma máscara CRT de tubo simulada sobre o jogo para dar uma estética analógica vintage. Ao sofrer contato com a Sombra no *Devaneio*, o jogo simula uma violenta desestabilização gráfica com distorções visuais e tremor de câmera.
 
 ---
 
@@ -42,25 +42,29 @@ O jogo conta com um motor de áudio procedural construído sobre a **Web Audio A
 
 ## 🕹️ Mecânicas de Gameplay e Controles
 
-O jogo equilibra plataforma precisa com manipulação de realidades:
+O jogo equilibra exploração tridimensional, orientação espacial e manipulação de realidades:
 
-*   **Alternância de Estados (Reality & Reverie)**: Ao apertar **Espaço** ou **Shift Esquerdo**, Pandora transita entre a *Realidade* (cinza, melancólica, física pesada) e o *Devaneio* (violeta-neon, física leve e plataformas ocultas reveladas).
-*   **Silhueta Flexível (Squash & Stretch)**: O corpo vetorial de Pandora achata-se ao aterrissar e estica-se ao saltar, dando uma sensação orgânica e fluida de inércia.
-*   **Escalada e Salto na Parede (Wall Jump)**: Pandora pode escorregar por superfícies verticais e realizar saltos angulares sucessivos para escalar poços profundos.
-*   **A Sombra Inteligente**: Apresenta quatro comportamentos distintos de acordo com a fase:
-    *   `stationary`: Paira pulsando em um ponto chave do cenário.
-    *   `mirror`: Imita a trajetória exata feita por Pandora com um buffer de atraso de 0.8 segundos.
-    *   `chase`: Flutua agressivamente em direção à personagem apenas quando esta entra no *Devaneio*. O contato força Pandora de volta à *Realidade* com um coice de física e efeito de glitch.
-    *   `companion`: A Sombra torna-se estável e age como uma **plataforma sólida e flutuante** brilhante, na qual a jogadora pode subir para alcançar locais inacessíveis.
+*   **Perspectiva de Câmera Alternável**: Alterne perfeitamente entre visão em **Primeira Pessoa** (imersiva, direta) e **Terceira Pessoa** (visão do modelo 3D de Pandora e do seu entorno).
+*   **Física de Navegação em Plano 3D**: Controle Pandora rotacionando e movimentando-se para frente e para trás, guiado por um radar HUD holográfico no canto inferior esquerdo que mostra a direção dos fragmentos de pensamento, do portal de saída e da Sombra.
+*   **Alternância de Estados (Reality & Reverie)**: Pandora transita entre a *Realidade* (física padrão, texturas rochosas) e o *Devaneio* (visual neon violeta, física acelerada e plataformas flutuantes móveis/ocultas reveladas).
+*   **Onda de Lucidez (Lucidity Wave)**: Dispara um pulso radial de energia que afasta e atordoa temporariamente a Sombra que a persegue.
+*   **A Sombra Inteligente**: Manifestação dos medos de Pandora, apresentando quatro comportamentos dinâmicos:
+    *   `stationary`: Paira de forma estática em um ponto chave do cenário.
+    *   `mirror`: Imita a trajetória de passos de Pandora com um atraso de buffer.
+    *   `chase`: Persegue Pandora ativamente quando ela entra no *Devaneio* (com batimentos cardíacos sonoros acelerando conforme ela se aproxima).
+    *   `companion`: Uma aliada que serve como um anteparo ou barreira física sólida para ajudar na locomoção.
 
 ### Controles Rápidos:
-| Tecla | Ação |
+| Tecla / Ação | Ação no Jogo |
 | :--- | :--- |
-| **A / D** ou **Seta Esquerda / Direita** | Correr Horizontalmente (com aceleração e inércia) |
-| **W** ou **Seta Acima** | Pular / Escalar Parede |
-| **Espaço** ou **Shift Esquerdo** | Alternar entre *Realidade* (Reality) e *Devaneio* (Reverie) |
-| **Esc** | Sair da fase ativa e retornar ao Mapa de Sinapses |
-| **Clique no Ícone de Som** | Ativar / Mutar os Sintetizadores procedurais |
+| **A / D** ou **Seta Esquerda / Direita** | Rotacionar a personagem |
+| **W / S** ou **Seta Acima / Abaixo** | Mover-se para frente / trás |
+| **Espaço** ou **Shift** ou **Q** ou **E** | Alternar entre *Realidade* (Reality) e *Devaneio* (Reverie) |
+| **E** ou **Clique do Mouse** | Disparar Onda de Lucidez |
+| **C** | Alternar Câmera (Primeira ou Terceira Pessoa) |
+| **Esc** ou **Botão Sair** | Retornar ao Mapa de Sinapses |
+| **Botão de Som (HUD)** | Ativar / Mutar sintetizadores procedurais |
+| **Botão CRT (HUD)** | Ativar / Desativar filtro retrô de tela CRT |
 
 ---
 
@@ -89,13 +93,13 @@ SELF-PANDORA-GAME/
     ├── style.css               # Design System, variáveis HSL, painéis glassmorphism
     ├── main.ts                 # Ponto de entrada que inicializa o GameCoordinator
     └── game/
-        ├── Player.ts           # Física AABB de Pandora, Wall-jump, Squash/Stretch e lógica local
-        ├── Shadow.ts           # IA da Sombra, rotinas de perseguição e deformações visuais
+        ├── Player.ts           # Física AABB de Pandora, movimento direcional e lógica local
+        ├── Shadow.ts           # IA da Sombra, rotinas de perseguição e plataforma companion
         ├── AudioManager.ts     # Sintetizadores de som procedural via Web Audio API
         ├── LevelManager.ts     # Gerador de banco de dados procedimental das 33 fases
         ├── levelsData.ts       # Configurações brutas (textos, gravidade, ventos, névoa e sombras)
         ├── ThoughtsUI.ts       # Typewriter cinemático e listagem dinâmica do Diário do Self
-        ├── ThreeDRenderer.ts   # Renderizador 2.5D/3D (Câmera, Luzes, UnrealBloom, Névoa e Meshes)
+        ├── ThreeDRenderer.ts   # Renderizador 3D (Câmera, Luzes, UnrealBloom, Névoa e Meshes)
         └── GameCoordinator.ts  # Master Loop, físicas, colisões, eventos de teclado e HUD
 ```
 
