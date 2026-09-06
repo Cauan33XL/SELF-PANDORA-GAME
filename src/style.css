@@ -10,16 +10,16 @@
   --border-reality: rgba(255, 255, 255, 0.08);
   
   /* Devaneio Colors */
-  --bg-reverie: #100619;
-  --bg-reverie-accent: #210d33;
-  --text-reverie: #fceeff;
-  --text-reverie-muted: #b89dbf;
-  --border-reverie: rgba(217, 70, 239, 0.15);
+  --bg-reverie: #101010;
+  --bg-reverie-accent: #1e1e1e;
+  --text-reverie: #ffffff;
+  --text-reverie-muted: #999999;
+  --border-reverie: rgba(255, 255, 255, 0.15);
   
   /* Common glow accents */
-  --accent-neon-violet: #d946ef;
-  --accent-neon-cyan: #06b6d4;
-  --accent-shadow-red: #ef4444;
+  --accent-neon-violet: #888888;
+  --accent-neon-cyan: #ffffff;
+  --accent-shadow-red: #555555;
   
   /* Transitions */
   --transition-slow: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -65,7 +65,7 @@ body.state-reverie {
 .state-reverie .glass-panel {
   background: rgba(24, 10, 36, 0.68);
   border: 1px solid var(--border-reverie);
-  box-shadow: 0 12px 40px 0 rgba(217, 70, 239, 0.08);
+  box-shadow: 0 12px 40px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* Telas (Screens) */
@@ -99,7 +99,7 @@ body.state-reverie {
 }
 
 .state-reverie .text-shadow-lg {
-  text-shadow: 0 0 25px rgba(217, 70, 239, 0.4);
+  text-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
 }
 
 /* Buttons System */
@@ -141,29 +141,29 @@ body.state-reverie {
 }
 
 .state-reverie .btn-surreal {
-  border-color: rgba(217, 70, 239, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .state-reverie .btn-surreal:hover {
-  background: rgba(217, 70, 239, 0.12);
+  background: rgba(255, 255, 255, 0.12);
   border-color: var(--accent-neon-violet);
-  box-shadow: 0 0 15px rgba(217, 70, 239, 0.25);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
 }
 
 /* Seletor de Fases: Container do Mapa de Sinapses */
 .synapse-map-container {
   background: 
-    radial-gradient(ellipse at 30% 20%, rgba(6, 182, 212, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 80%, rgba(217, 70, 239, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 50%),
     linear-gradient(180deg, #09090b 0%, #0d0d10 50%, #09090b 100%);
   background-size: 100% 100%;
 }
 
 .state-reverie .synapse-map-container {
   background: 
-    radial-gradient(ellipse at 30% 20%, rgba(217, 70, 239, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
-    linear-gradient(180deg, #10071c 0%, #160a26 50%, #10071c 100%);
+    radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, #101010 0%, #161616 50%, #101010 100%);
 }
 
 .synapse-map-container::-webkit-scrollbar {
@@ -177,7 +177,7 @@ body.state-reverie {
   border-radius: 3px;
 }
 .state-reverie .synapse-map-container::-webkit-scrollbar-thumb {
-  background: rgba(217, 70, 239, 0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* Synapse Node Styling */
@@ -223,11 +223,11 @@ body.state-reverie {
   border-color: var(--accent-neon-cyan);
   color: var(--accent-neon-cyan);
   box-shadow: 
-    0 0 20px rgba(6, 182, 212, 0.4),
-    0 0 40px rgba(6, 182, 212, 0.15),
-    inset 0 0 15px rgba(6, 182, 212, 0.15);
+    0 0 20px rgba(255, 255, 255, 0.4),
+    0 0 40px rgba(255, 255, 255, 0.15),
+    inset 0 0 15px rgba(255, 255, 255, 0.15);
   background: 
-    radial-gradient(circle at 30% 30%, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0.01) 70%);
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.01) 70%);
 }
 
 .synapse-node.completed::after {
@@ -236,7 +236,7 @@ body.state-reverie {
   width: 58px;
   height: 58px;
   border-radius: 50%;
-  border: 1px solid rgba(6, 182, 212, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   animation: ripple 2s ease-out infinite;
 }
 
@@ -266,15 +266,15 @@ body.state-reverie {
   border-color: var(--accent-neon-violet);
   color: var(--text-reverie);
   background: 
-    radial-gradient(circle at 30% 30%, rgba(217, 70, 239, 0.25) 0%, rgba(26, 12, 46, 0.75) 70%);
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25) 0%, rgba(26, 12, 46, 0.75) 70%);
   box-shadow: 
-    0 0 25px rgba(217, 70, 239, 0.5),
-    0 0 50px rgba(217, 70, 239, 0.25),
-    inset 0 0 20px rgba(217, 70, 239, 0.15);
+    0 0 25px rgba(255, 255, 255, 0.5),
+    0 0 50px rgba(255, 255, 255, 0.25),
+    inset 0 0 20px rgba(255, 255, 255, 0.15);
 }
 
 .state-reverie .synapse-node.active::after {
-  border-color: rgba(217, 70, 239, 0.4);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .synapse-node.locked {
@@ -297,8 +297,8 @@ body.state-reverie {
 
 .synapse-node:hover:not(.locked).completed {
   box-shadow: 
-    0 0 30px rgba(6, 182, 212, 0.5),
-    0 0 60px rgba(6, 182, 212, 0.25);
+    0 0 30px rgba(255, 255, 255, 0.5),
+    0 0 60px rgba(255, 255, 255, 0.25);
 }
 
 .synapse-node:hover:not(.locked).active {
@@ -309,8 +309,8 @@ body.state-reverie {
 
 .state-reverie .synapse-node:hover:not(.locked).active {
   box-shadow: 
-    0 0 35px rgba(217, 70, 239, 0.7),
-    0 0 70px rgba(217, 70, 239, 0.35);
+    0 0 35px rgba(255, 255, 255, 0.7),
+    0 0 70px rgba(255, 255, 255, 0.35);
 }
 
 /* Tooltip do Nó */
@@ -352,7 +352,7 @@ body.state-reverie {
   font-style: italic;
   font-size: 0.72rem;
   color: var(--accent-neon-violet);
-  text-shadow: 0 0 8px rgba(217, 70, 239, 0.3);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 /* Camada SVG de Conexões */
@@ -382,19 +382,19 @@ body.state-reverie {
 }
 
 .synapse-svg-layer line.completed-path {
-  stroke: rgba(6, 182, 212, 0.25);
+  stroke: rgba(255, 255, 255, 0.25);
   stroke-width: 2;
-  filter: drop-shadow(0 0 2px rgba(6, 182, 212, 0.2));
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
 }
 
 .state-reverie .synapse-svg-layer line.active-path {
-  stroke: rgba(217, 70, 239, 0.3);
-  filter: drop-shadow(0 0 3px rgba(217, 70, 239, 0.3));
+  stroke: rgba(255, 255, 255, 0.3);
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
 }
 
 .state-reverie .synapse-svg-layer line.completed-path {
-  stroke: rgba(6, 182, 212, 0.3);
-  filter: drop-shadow(0 0 2px rgba(6, 182, 212, 0.25));
+  stroke: rgba(255, 255, 255, 0.3);
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.25));
 }
 
 /* Partida: Pensamentos Poéticos Flutuantes e Máquina de Escrever */
@@ -449,7 +449,7 @@ body.state-reverie {
 }
 .state-reverie .diary-list::-webkit-scrollbar-thumb,
 .state-reverie .diary-content::-webkit-scrollbar-thumb {
-  background: rgba(217, 70, 239, 0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .diary-item {
@@ -474,8 +474,8 @@ body.state-reverie {
 }
 
 .state-reverie .diary-item.selected {
-  background: rgba(217, 70, 239, 0.1);
-  border-color: rgba(217, 70, 239, 0.18);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.18);
   color: var(--text-reverie);
 }
 
@@ -492,7 +492,6 @@ body.state-reverie {
     linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
   background-size: 100% 4px, 6px 100%;
   opacity: 0;
-  z-index: 9999;
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
@@ -507,7 +506,6 @@ body.state-reverie {
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
   background: radial-gradient(circle, rgba(0,0,0,0) 65%, rgba(0,0,0,0.35) 100%);
-  z-index: 10000;
   pointer-events: none;
 }
 
@@ -519,7 +517,7 @@ body.crt-flicker #crt-overlay {
 .crt-toggle.active {
   color: var(--accent-neon-cyan);
   border-color: var(--accent-neon-cyan);
-  box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
 }
 
 /* Animations */
@@ -608,11 +606,20 @@ body.state-reverie #game-container {
 .camera-toggle.active {
   color: var(--accent-neon-violet);
   border-color: var(--accent-neon-violet);
-  box-shadow: 0 0 12px rgba(217, 70, 239, 0.3);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
 }
 
 .state-reverie #radar-container {
   border-color: var(--border-reverie);
-  box-shadow: 0 0 15px rgba(217, 70, 239, 0.1);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
+
+@keyframes title-breathe {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2)); }
+  50% { transform: scale(1.02); filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.4)); }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}

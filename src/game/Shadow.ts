@@ -1,4 +1,4 @@
-import { type LevelConfig } from './LevelManager';
+import { type NexusInfo } from './LevelManager';
 import { AudioManager } from './AudioManager';
 import { Player } from './Player';
 
@@ -24,9 +24,9 @@ export class Shadow {
     this.stunnedTimer = 0;
   }
 
-  update(player: Player, level: LevelConfig, isReverie: boolean) {
+  update(player: Player, nearestNexus: NexusInfo, isReverie: boolean) {
     this.pulseTime += 0.08;
-    const behavior = level.shadowBehavior;
+    const behavior = nearestNexus.shadowBehavior;
     const audio = AudioManager.getInstance();
 
     if (behavior === 'none') {
@@ -70,19 +70,19 @@ export class Shadow {
 
     if (!isReverie) {
       if (behavior === 'chase' || behavior === 'mirror') {
-        this.x += (level.shadowSpawn.x - this.x) * 0.05;
-        this.y += (level.shadowSpawn.y - this.y) * 0.05;
+        this.x += (nearestNexus.worldX + 500 - this.x) * 0.05;
+        this.y += (nearestNexus.worldY - this.y) * 0.05;
       } else if (behavior === 'stationary') {
-        this.x = level.shadowSpawn.x;
-        this.y = level.shadowSpawn.y;
+        this.x = nearestNexus.worldX + 500;
+        this.y = nearestNexus.worldY;
       }
       audio.setHeartbeatSpeed(0);
       return;
     }
 
     if (behavior === 'stationary') {
-      this.x = level.shadowSpawn.x;
-      this.y = level.shadowSpawn.y + Math.sin(this.pulseTime * 1.5) * 4;
+      this.x = nearestNexus.worldX + 500;
+      this.y = nearestNexus.worldY + Math.sin(this.pulseTime * 1.5) * 4;
       audio.setHeartbeatSpeed(0);
     } else if (behavior === 'mirror') {
       if (this.historyBuffer.length >= this.bufferSize) {
@@ -90,8 +90,8 @@ export class Shadow {
         this.x += (oldest.x - this.x) * 0.15;
         this.y += (oldest.y - this.y) * 0.15;
       } else {
-        this.x = level.shadowSpawn.x;
-        this.y = level.shadowSpawn.y;
+        this.x = nearestNexus.worldX + 500;
+        this.y = nearestNexus.worldY;
       }
       const dist = this.getDistanceTo(player.x, player.y);
       const intensity = Math.max(0, 1 - dist / 300);
@@ -109,12 +109,12 @@ export class Shadow {
       audio.setHeartbeatSpeed(intensity);
     } else if (behavior === 'companion') {
       const targetX = player.x;
-      if (level.number === 33) {
-        this.x = level.shadowSpawn.x;
-        this.y = level.shadowSpawn.y;
+      if (nearestNexus.number === 33) {
+        this.x = nearestNexus.worldX + 500;
+        this.y = nearestNexus.worldY;
       } else {
         this.x += (targetX - this.x) * 0.04;
-        this.y += (level.shadowSpawn.y - this.y) * 0.04;
+        this.y += (nearestNexus.worldY - this.y) * 0.04;
       }
       audio.setHeartbeatSpeed(0);
     }

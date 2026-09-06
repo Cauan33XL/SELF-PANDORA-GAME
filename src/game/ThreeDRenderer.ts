@@ -2,85 +2,45 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { type Platform } from './LevelManager';
 
-function ml(color: number): THREE.Group {
-  const t = new THREE.Group(),
-      n = new THREE.MeshStandardMaterial({color: color, emissive: color, emissiveIntensity: .4, metalness: .15, roughness: .7}),
-      rVal = new THREE.Mesh(new THREE.ConeGeometry(.32, .65, 16), n);
-  rVal.position.y = -.1;
-  rVal.rotation.x = Math.PI;
-  rVal.castShadow = !0;
-  rVal.receiveShadow = !0;
-  t.add(rVal);
-  
-  const i = new THREE.Mesh(new THREE.CylinderGeometry(.16, .2, .35, 16), n);
-  i.position.y = .25;
-  i.castShadow = !0;
-  t.add(i);
-  
-  const a = new THREE.Mesh(new THREE.SphereGeometry(.24, 16, 16), n);
-  a.position.y = .62;
-  a.castShadow = !0;
-  t.add(a);
-  
-  const oVal = new THREE.Mesh(new THREE.SphereGeometry(.25, 16, 16), n);
-  oVal.position.set(0, .64, -.04);
-  oVal.scale.set(1.02, 1.02, 1.05);
-  oVal.castShadow = !0;
-  t.add(oVal);
-  
-  const s = new THREE.CylinderGeometry(.045, .07, .45, 8),
-      cVal = new THREE.Mesh(s, n);
-  cVal.position.set(-.24, .52, -.08);
-  cVal.rotation.z = Math.PI / 6;
-  cVal.castShadow = !0;
-  t.add(cVal);
-  
-  const l = new THREE.Mesh(s, n);
-  l.position.set(.24, .52, -.08);
-  l.rotation.z = -Math.PI / 6;
-  l.castShadow = !0;
-  t.add(l);
-  
-  const u = new THREE.ConeGeometry(.06, .16, 4),
-      d = new THREE.Mesh(u, n);
-  d.position.set(-.06, .78, -.1);
-  d.rotation.z = Math.PI / 3;
-  t.add(d);
-  
-  const f = new THREE.Mesh(u, n);
-  f.position.set(.06, .78, -.1);
-  f.rotation.z = -Math.PI / 3;
-  t.add(f);
-  
-  const p = new THREE.CylinderGeometry(.05, .05, .45, 8),
-      m = new THREE.Mesh(p, n);
-  m.position.set(-.1, -.58, 0);
-  m.castShadow = !0;
-  t.add(m);
-  
-  const h = new THREE.Mesh(p, n);
-  h.position.set(.1, -.58, 0);
-  h.castShadow = !0;
-  t.add(h);
-  
-  const g = new THREE.CylinderGeometry(.045, .045, .4, 8),
-      _ = new THREE.Mesh(g, n);
-  _.position.set(-.24, .15, 0);
-  _.rotation.z = Math.PI / 12;
-  _.castShadow = !0;
-  t.add(_);
-  
-  const v = new THREE.Mesh(g, n);
-  v.position.set(.24, .15, 0);
-  v.rotation.z = -Math.PI / 12;
-  v.castShadow = !0;
-  t.add(v);
-  
-  const y = new THREE.Mesh(new THREE.SphereGeometry(.8, 16, 16), new THREE.MeshBasicMaterial({color: color, transparent: !0, opacity: .15, side: 1}));
-  t.add(y);
-  return t;
+function ml(_color: number): THREE.Group {
+  const g = new THREE.Group();
+
+  const loader = new GLTFLoader();
+  loader.load(
+    '/player/PANDORA-MODEL.glb',
+    (gltf) => {
+      const object = gltf.scene;
+      
+      // Ajuste de escala. GLB costuma usar metros, mas ajustaremos se necessário.
+      // Tentaremos uma escala maior caso o FBX estivesse invisível por ser microscópico.
+      object.scale.set(1.5, 1.5, 1.5);
+      
+      // Rotacionando para alinhar (Z-Up)
+      object.rotation.x = Math.PI / 2;
+      
+      // Habilitar sombras
+      object.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+      
+      g.add(object);
+      g.userData.isGLB = true;
+    },
+    (xhr) => {
+      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+    (error) => {
+      console.error('Erro ao carregar o GLB:', error);
+    }
+  );
+
+  return g;
 }
 
 function hl(): THREE.Group {
@@ -292,6 +252,7 @@ export class ThreeDRenderer {
   cameraMode: 'first' | 'third' = 'first';
   currentLevelNum = 1;
   playerAngle = 0;
+  walkPhase = 0;
   targetCamX = 0;
   targetCamY = 0;
   playerColor = 2282478;
@@ -321,7 +282,8 @@ export class ThreeDRenderer {
     const progressBar = document.getElementById('loading-progress-bar');
     const statusText = document.getElementById('loading-status-text');
     const loadingScreen = document.getElementById('loading-screen');
-    const menuScreen = document.getElementById('menu-screen');
+    const menuScreenBase = document.getElementById('menu-screen-base');
+    const menuScreenTop = document.getElementById('menu-screen-top');
     const quoteElement = document.getElementById('loading-poetic-quote');
 
     const quotes = [
@@ -354,9 +316,14 @@ export class ThreeDRenderer {
             loadingScreen.style.display = 'none';
           }, 1000);
         }
-        if (menuScreen) {
-          menuScreen.classList.add('active', 'pointer-events-auto');
-          menuScreen.classList.remove('pointer-events-none');
+        if (menuScreenBase) {
+          menuScreenBase.classList.add('active', 'pointer-events-auto');
+          menuScreenBase.classList.remove('pointer-events-none');
+        }
+        if (menuScreenTop) {
+          menuScreenTop.classList.add('active');
+          menuScreenTop.style.pointerEvents = 'none';
+          menuScreenTop.classList.remove('pointer-events-none');
         }
       }, 600);
     };
@@ -373,9 +340,14 @@ export class ThreeDRenderer {
           loadingScreen.classList.add('pointer-events-none');
           loadingScreen.style.display = 'none';
         }
-        if (menuScreen) {
-          menuScreen.classList.add('active', 'pointer-events-auto');
-          menuScreen.classList.remove('pointer-events-none');
+        if (menuScreenBase) {
+          menuScreenBase.classList.add('active', 'pointer-events-auto');
+          menuScreenBase.classList.remove('pointer-events-none');
+        }
+        if (menuScreenTop) {
+          menuScreenTop.classList.add('active');
+          menuScreenTop.style.pointerEvents = 'none';
+          menuScreenTop.classList.remove('pointer-events-none');
         }
       }, 1500);
     };
@@ -469,24 +441,24 @@ export class ThreeDRenderer {
     const t = new THREE.SphereGeometry(350, 32, 32),
         n = new THREE.MeshBasicMaterial({map: this.skyDayTexture, side: 1, fog: false});
     this.skySphere = new THREE.Mesh(t, n);
-    this.skySphere.position.set(25, -25, 0);
+    this.skySphere.position.set(240, -160, 0); // Center on world
     this.scene.add(this.skySphere);
+    
     const grass = new THREE.TextureLoader().load(`/textures/grass_texture.png`);
     grass.wrapS = THREE.RepeatWrapping;
     grass.wrapT = THREE.RepeatWrapping;
-    grass.repeat.set(75, 75);
+    grass.repeat.set(125, 125); // Scale repeat for larger floor
     grass.minFilter = THREE.LinearMipmapLinearFilter;
     grass.magFilter = THREE.LinearFilter;
     grass.generateMipmaps = true;
     grass.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({color: 16777215, map: grass, metalness: 0.05, roughness: 0.95}));
-    ground.position.set(25, -25, -1.09);
+    
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshStandardMaterial({color: 16777215, map: grass, metalness: 0.05, roughness: 0.95}));
+    // Center ground perfectly for a 24000x16000 world (ThreeJS coords: 500x333)
+    ground.position.set(240, -160, -1.09);
     ground.receiveShadow = true;
     this.scene.add(ground);
-    const grid = new THREE.GridHelper(600, 150, 2039597, 789518);
-    grid.rotation.x = Math.PI / 2;
-    grid.position.set(25, -25, -1.08);
-    this.scene.add(grid);
+    
     const s = [-25, -18, -10, 50, 58, 65],
         l = [-35, -28, -20, -10, 0, 10];
     for (const eVal of s) {
@@ -720,21 +692,107 @@ export class ThreeDRenderer {
     }
     const n = ml(this.playerColor);
     this.playerMesh = n;
-    this.playerMesh.position.set(eVal / 48 - 10, 5 - t / 48, -0.45);
+    this.playerMesh.position.set(eVal / 48 - 10, 5 - t / 48, -0.5);
+    this.walkPhase = 0;
     this.scene.add(this.playerMesh);
   }
 
-  updatePlayer(eVal: number, t: number, n: number) {
+  updatePlayer(eVal: number, t: number, n: number, jumpHeight = 0, moveSpeed = 0) {
     const rVal = eVal / 48 - 10,
         i = 5 - t / 48;
     this.playerAngle = n;
     this.targetCamX = rVal;
     this.targetCamY = i;
     if (this.playerMesh) {
-      this.playerMesh.position.set(rVal, i, -0.45);
+      const elapsed = this.clock.getElapsedTime();
+      const zLift = jumpHeight * 0.08;
+      const bob = this.animatePlayer(moveSpeed, jumpHeight, elapsed);
+      const scaleFactor = 1 + jumpHeight * 0.03;
+      this.playerMesh.position.set(rVal, i, -0.5 + zLift + bob);
+      this.playerMesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
       this.playerMesh.visible = (this.cameraMode === 'third');
-      this.playerMesh.rotation.z = -this.playerAngle - Math.PI / 2;
+      this.playerMesh.rotation.z = this.playerAngle;
     }
+  }
+
+  animatePlayer(moveSpeed: number, jumpHeight: number, elapsed: number) {
+    const mesh = this.playerMesh;
+    if (!mesh || !mesh.visible) return 0;
+
+    const legs = mesh.userData.legs as THREE.Group[] | undefined;
+    const arms = mesh.userData.arms as THREE.Group[] | undefined;
+    const hair = mesh.userData.hair as THREE.Group | undefined;
+    const hairLocks = mesh.userData.hairLocks as THREE.Mesh[] | undefined;
+    const dress = mesh.userData.dress as THREE.Group | THREE.Mesh | undefined;
+    const head = mesh.userData.head as THREE.Group | undefined;
+
+    const isMoving = moveSpeed > 0.35;
+
+    // Advance walk phase smoothly based on movement speed
+    if (isMoving) {
+      this.walkPhase += 0.05 + moveSpeed * 0.045;
+    }
+
+    const phase = this.walkPhase;
+    const swing = isMoving ? Math.sin(phase) * 0.48 : 0;
+    const swingOpp = isMoving ? Math.sin(phase + Math.PI) * 0.48 : 0;
+
+    // Legs stride with subtle stride curves
+    if (legs) {
+      legs[0].rotation.y = swing;
+      legs[1].rotation.y = swingOpp;
+    }
+
+    // Arms counter-swing smoothly with feminine elbow flex
+    if (arms) {
+      arms[0].rotation.y = isMoving ? swingOpp * 0.7 : Math.sin(elapsed * 1.5) * 0.04;
+      arms[1].rotation.y = isMoving ? swing * 0.7 : Math.cos(elapsed * 1.5) * 0.04;
+      arms[0].rotation.x = isMoving ? -0.12 + Math.abs(swingOpp) * 0.15 : -0.12;
+      arms[1].rotation.x = isMoving ? 0.12 - Math.abs(swing) * 0.15 : 0.12;
+    }
+
+    // Dynamic Hair sway (back hair locks curve backward with speed)
+    if (hair) {
+      hair.rotation.y = isMoving ? Math.sin(phase) * 0.09 : Math.sin(elapsed * 1.2) * 0.02;
+      hair.rotation.x = isMoving ? Math.abs(Math.sin(phase)) * 0.06 : 0;
+    }
+    if (hairLocks) {
+      hairLocks.forEach((lock, idx) => {
+        const lag = idx * 0.12;
+        lock.rotation.y = isMoving ? Math.sin(phase - lag) * 0.14 : Math.sin(elapsed * 1.5 + lag) * 0.03;
+        lock.rotation.z = isMoving ? 0.1 + moveSpeed * 0.05 : 0;
+      });
+    }
+
+    // Skirt sways subtly opposite to hip stride
+    if (dress) {
+      dress.rotation.y = isMoving ? Math.sin(phase + Math.PI / 2) * 0.08 : Math.sin(elapsed * 1.8) * 0.015;
+      dress.rotation.x = isMoving ? Math.cos(phase * 2) * 0.03 : 0;
+    }
+
+    // Head breathing micro-movement
+    if (head) {
+      head.rotation.y = isMoving ? Math.sin(phase * 0.5) * 0.03 : Math.sin(elapsed * 1.2) * 0.015;
+      head.rotation.x = Math.sin(elapsed * 1.8) * 0.01;
+    }
+
+    // Jump posture — arms float forward/up, legs tuck gracefully, hair floats back
+    if (jumpHeight > 0.2) {
+      if (legs) {
+        legs[0].rotation.y = 0.32;
+        legs[1].rotation.y = 0.22;
+      }
+      if (arms) {
+        arms[0].rotation.y = -0.42;
+        arms[1].rotation.y = -0.28;
+      }
+      if (hair) {
+        hair.rotation.x = -0.25;
+      }
+    }
+
+    // Vertical bob: organic springy gait while walking, gentle breathing when standing still
+    return isMoving ? Math.abs(Math.sin(phase)) * 0.038 : Math.sin(elapsed * 2.1) * 0.006;
   }
 
   createShadow(eVal: number, t: number) {
@@ -790,10 +848,22 @@ export class ThreeDRenderer {
     return cVal;
   }
 
-  updatePlatforms(eVal: Platform[]) {
+  updatePlatforms(eVal: Platform[], playerX: number, playerY: number) {
     eVal.forEach((item, tVal) => {
-      if (this.platformMeshes[tVal]) {
-        this.platformMeshes[tVal].position.set((item.x + item.w / 2) / 48 - 10, 5 - (item.y + item.h / 2) / 48, -0.5);
+      const mesh = this.platformMeshes[tVal];
+      if (mesh) {
+        const dx = item.x - playerX;
+        const dy = item.y - playerY;
+        if (dx * dx + dy * dy > 9000000) {
+          mesh.visible = false;
+        } else {
+          mesh.visible = true;
+          const targetX = (item.x + item.w / 2) / 48 - 10;
+          const targetY = 5 - (item.y + item.h / 2) / 48;
+          if (Math.abs(mesh.position.x - targetX) > 0.001 || Math.abs(mesh.position.y - targetY) > 0.001) {
+            mesh.position.set(targetX, targetY, -0.5);
+          }
+        }
       }
     });
   }
@@ -808,6 +878,15 @@ export class ThreeDRenderer {
   createReminiscence(eVal: number, t: number) {
     const n = yl();
     n.userData.floatOffset = Math.random() * Math.PI * 2;
+    n.userData.fadeChildren = [];
+    n.traverse(child => {
+      if ((child as THREE.Mesh).isMesh) {
+        n.userData.fadeChildren.push({
+          mesh: child as THREE.Mesh,
+          baseOpacity: ((child as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity ?? 1
+        });
+      }
+    });
     const rVal = n;
     rVal.position.set((eVal + 7.5) / 48 - 10, 5 - (t + 7.5) / 48, 0);
     this.scene.add(rVal);
@@ -817,17 +896,51 @@ export class ThreeDRenderer {
 
   updateReminiscences(eVal: any[], t: number) {
     eVal.forEach((item, nVal) => {
-      if (this.reminiscenceMeshes[nVal]) {
-        if (item.collected) {
-          this.reminiscenceMeshes[nVal].visible = false;
-        } else {
-          this.reminiscenceMeshes[nVal].visible = true;
-          const rVal = this.reminiscenceMeshes[nVal];
-          rVal.position.set((item.x + 7.5) / 48 - 10, 5 - (item.y + 7.5) / 48, 0);
-          rVal.rotation.y = t * 2 + (rVal.userData.floatOffset || 0);
-          rVal.rotation.x = t * 1.5;
-          rVal.position.y += Math.sin(t * 3 + (rVal.userData.floatOffset || 0)) * 0.15;
-        }
+      const rVal = this.reminiscenceMeshes[nVal];
+      if (!rVal) return;
+
+      if (item.collected) {
+        rVal.visible = false;
+        return;
+      }
+      rVal.visible = true;
+
+      const pick = item.pickupProgress;
+      const isAbsorbing = pick !== undefined && pick < 1;
+      const fadeChildren = rVal.userData.fadeChildren as { mesh: THREE.Object3D; baseOpacity: number }[] | undefined;
+
+      if (isAbsorbing && fadeChildren) {
+        // Absorb flight: glide to Pandora, shrink and dissolve
+        rVal.scale.setScalar(1 - pick * 0.85);
+        rVal.position.set((item.x + 7.5) / 48 - 10, 5 - (item.y + 7.5) / 48, 0);
+        rVal.rotation.x = t * 1.5;
+        rVal.rotation.y = t * 2 + (rVal.userData.floatOffset || 0);
+        const fade = 1 - pick * 0.8;
+        fadeChildren.forEach(({ mesh, baseOpacity }) => {
+          const mat = (mesh as THREE.Mesh).material as THREE.MeshBasicMaterial;
+          if (mat) {
+            mat.transparent = true;
+            mat.opacity = baseOpacity * fade;
+          }
+        });
+        return;
+      }
+
+      // Normal floaty idling
+      rVal.scale.set(1, 1, 1);
+      rVal.position.set((item.x + 7.5) / 48 - 10, 5 - (item.y + 7.5) / 48, 0);
+      rVal.rotation.y = t * 2 + (rVal.userData.floatOffset || 0);
+      rVal.rotation.x = t * 1.5;
+      rVal.position.y += Math.sin(t * 3 + (rVal.userData.floatOffset || 0)) * 0.15;
+
+      if (fadeChildren) {
+        fadeChildren.forEach(({ mesh, baseOpacity }) => {
+          const mat = (mesh as THREE.Mesh).material as THREE.MeshBasicMaterial;
+          if (mat) {
+            mat.transparent = baseOpacity < 1;
+            mat.opacity = baseOpacity;
+          }
+        });
       }
     });
   }
