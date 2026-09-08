@@ -25,7 +25,6 @@
     "@dimforge/rapier3d": "^0.20.0",
     "@dimforge/rapier3d-compat": "^0.20.0",
     "@types/three": "^0.184.1",
-    "phaser": "^4.1.0",
     "three": "^0.184.0"
   }
 }

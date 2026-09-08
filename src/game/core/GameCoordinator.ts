@@ -1,13 +1,13 @@
-import { ThreeDRenderer } from '../renderer/ThreeDRenderer';
+import { CoreRenderer } from '../renderer/CoreRenderer';
 import { LevelManager, type Platform, type Reminiscence, type NexusInfo } from '../level/LevelManager';
 import { Player } from '../entities/Player';
 import { Shadow } from '../entities/Shadow';
 import { AudioManager } from './AudioManager';
-import { UIManager } from '../../ui/UIManager';
+import { UIManager } from '../../ui/core/UIManager';
 import RAPIER from '@dimforge/rapier3d-compat';
 
 export class GameCoordinator {
-  renderer: ThreeDRenderer;
+  renderer: CoreRenderer;
   levelManager: LevelManager;
   audioManager: AudioManager;
   ui: UIManager;
@@ -56,7 +56,7 @@ export class GameCoordinator {
         this.showScreen('menu');
       },
       onReturnToGame: () => {
-        if (this.renderer.platformMeshes.length > 0) {
+        if (this.renderer.envRenderer.platformMeshes.length > 0) {
           this.showScreen('hud');
         } else {
           this.showScreen('menu');
@@ -101,11 +101,12 @@ export class GameCoordinator {
     this.loadProgress();
     this.setupKeyboardListeners();
     const container = document.getElementById('game-container')!;
-    this.renderer = new ThreeDRenderer(container);
+    this.renderer = new CoreRenderer(container);
     window.addEventListener('resize', () => {
       this.renderer.resize(window.innerWidth, window.innerHeight);
     });
     this.startLoop();
+    this.showScreen('menu');
   }
 
   loadProgress() {
@@ -144,7 +145,7 @@ export class GameCoordinator {
         if (this.gameState === 'playing') {
           this.showScreen('level');
         } else if (this.gameState === 'level_select') {
-          if (this.renderer.platformMeshes.length > 0) {
+          if (this.renderer.envRenderer.platformMeshes.length > 0) {
             this.showScreen('hud');
           } else {
             this.showScreen('menu');
@@ -187,6 +188,7 @@ export class GameCoordinator {
     } else if (screenName === 'diary') {
       this.ui.diary.populateDiary(this.levelManager.getNexuses(), this.unlockedLevels);
     } else if (screenName === 'menu') {
+      this.isStartingGame = false;
       this.audioManager.setHeartbeatSpeed(0);
     }
   }
@@ -227,7 +229,37 @@ export class GameCoordinator {
     });
   }
 
+  private isStartingGame = false;
+
+  clearWorld() {
+    if (this.renderer && this.renderer.envRenderer) {
+      this.renderer.envRenderer.platformMeshes.forEach((m) => this.renderer.scene.remove(m));
+      this.renderer.envRenderer.platformMeshes = [];
+      this.renderer.envRenderer.platformMeta = [];
+    }
+    if (this.renderer && this.renderer.entityRenderer) {
+      if (this.renderer.entityRenderer.doorMesh) {
+        this.renderer.scene.remove(this.renderer.entityRenderer.doorMesh);
+        this.renderer.entityRenderer.doorMesh = null;
+      }
+      this.renderer.entityRenderer.reminiscenceMeshes.forEach((m) => this.renderer.scene.remove(m));
+      this.renderer.entityRenderer.reminiscenceMeshes = [];
+    }
+    this.activePlatforms = [];
+    this.activeReminiscences = [];
+    
+    if (this.physicsWorld) {
+      this.physicsWorld.free();
+    }
+    this.physicsWorld = new RAPIER.World({ x: 0, y: 0, z: -20.0 });
+  }
+
   startGameWorld() {
+    if (this.isStartingGame) return;
+    this.isStartingGame = true;
+    
+    this.clearWorld();
+
     this.victoryTimer = 0;
     this.glitchIntensity = 0;
     this.time = 0;
@@ -288,10 +320,7 @@ export class GameCoordinator {
     const nearest = this.levelManager.getNearestNexus(this.player.x, this.player.y);
     if (nearest && nearest !== this.currentNexus) {
       this.currentNexus = nearest;
-      const levelNumHud = document.getElementById('hud-level-num');
-      if (levelNumHud) {
-        levelNumHud.innerText = `Região: ${this.currentNexus.title}`;
-      }
+      this.ui.hud.status.updateLevel(this.currentNexus.number, this.currentNexus.title, this.currentNexus.tag);
       
       if (!this.unlockedLevels.includes(this.currentNexus.number)) {
           this.unlockedLevels.push(this.currentNexus.number);
@@ -315,7 +344,7 @@ export class GameCoordinator {
 
     this.physicsWorld.step();
 
-    this.player.update(this.keys, this.renderer.cameraOrbitYaw);
+    this.player.update(this.keys, this.renderer.pandoraRenderer.cameraOrbitYaw);
     
     this.levelManager.worldPlatforms.forEach((p) => {
       if (p.origX === undefined) p.origX = p.x;
@@ -369,7 +398,7 @@ export class GameCoordinator {
     this.renderer.updateShadow(this.shadow.x, this.shadow.y, this.shadow.isStunned);
     
     this.renderer.updatePlatforms(this.levelManager.worldPlatforms, this.player.x, this.player.y);
-    this.renderer.updateReminiscences(this.levelManager.worldReminiscences, this.time);
+    this.renderer.updateReminiscences(this.levelManager.worldReminiscences);
     
     this.renderer.updateParticles();
     this.renderer.updateWaveRing(
@@ -380,15 +409,9 @@ export class GameCoordinator {
     );
     this.updateRadar();
 
-    const waveCooldownBar = document.getElementById('hud-wave-cooldown-bar');
-    const waveStatusText = document.getElementById('hud-wave-status');
-    if (waveCooldownBar && waveStatusText) {
-      const pct = this.player.waveCooldown === 0 ? 100 : ((120 - this.player.waveCooldown) / 120) * 100;
-      waveCooldownBar.style.width = pct + '%';
-      waveStatusText.innerText = this.player.waveCooldown === 0 ? 'Pronta (E)' : 'Recarregando...';
-      waveStatusText.style.color = this.player.waveCooldown === 0 ? '#ffffff' : '#555';
-    }
-
+    this.ui.hud.status.updateWaveCooldown((120 - this.player.waveCooldown) / 120.0);
+    this.ui.hud.radar.updateSweep();
+    
     if (this.shakeTimer > 0) {
       this.renderer.setCameraShake(this.shakeAmount * (this.shakeTimer / 35));
       this.shakeTimer--;
@@ -418,10 +441,7 @@ export class GameCoordinator {
       'rgba(255, 255, 255, '
     );
 
-    const remHud = document.getElementById('hud-reminiscence');
-    if (remHud) {
-      remHud.innerText = `Memórias: ${this.globalCollectedCount} / ${this.levelManager.worldReminiscences.length}`;
-    }
+    this.ui.hud.fragments.updateCount(this.globalCollectedCount, this.levelManager.worldReminiscences.length);
     if (rem.text) {
       this.ui.hud.triggerFloatingThought(rem.text, 0.5, 0.4);
     }
