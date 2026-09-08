@@ -144,10 +144,23 @@ body.state-reverie {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-.state-reverie .btn-surreal:hover {
+.state-reverie .btn-surreal:hover,
+.state-reverie .btn-surreal.selected {
   background: rgba(255, 255, 255, 0.12);
   border-color: var(--accent-neon-violet);
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+}
+
+.btn-surreal.selected {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 1);
+  transform: translateY(-8px);
+  box-shadow: 0 0 50px rgba(255, 255, 255, 0.5);
+}
+
+.btn-surreal.selected::before {
+  left: 100%;
+  transition: 0.8s ease;
 }
 
 /* Seletor de Fases: Container do Mapa de Sinapses */
@@ -578,9 +591,7 @@ body.crt-flicker #crt-overlay {
   }
 }
 
-/* Cinematic B&W Reality and Colorful Reverie transition filter */
 #game-container {
-  filter: grayscale(1) contrast(1.15) brightness(0.9);
   transition: filter 1s ease-in-out;
 }
 
@@ -622,4 +633,17 @@ body.state-reverie #game-container {
 
 @keyframes shimmer {
   100% { transform: translateX(100%); }
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }

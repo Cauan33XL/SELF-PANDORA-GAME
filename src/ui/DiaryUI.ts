@@ -1,4 +1,4 @@
-import { type NexusInfo } from '../game/LevelManager';
+import { type NexusInfo } from '../game/level/LevelManager';
 
 export class DiaryUI {
   private container: HTMLElement;

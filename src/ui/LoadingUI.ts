@@ -41,6 +41,7 @@ export class LoadingUI {
   }
 
   public show(): void {
+    this.container.style.display = '';
     this.container.classList.add('active', 'pointer-events-auto');
     this.container.classList.remove('pointer-events-none');
   }
@@ -48,5 +49,10 @@ export class LoadingUI {
   public hide(): void {
     this.container.classList.remove('active', 'pointer-events-auto');
     this.container.classList.add('pointer-events-none');
+    setTimeout(() => {
+      if (!this.container.classList.contains('active')) {
+        this.container.style.display = 'none';
+      }
+    }, 1000);
   }
 }

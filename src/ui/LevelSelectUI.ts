@@ -2,14 +2,14 @@ export class LevelSelectUI {
   private container: HTMLElement;
 
   private onBackToMenu: () => void;
-  private onResetProgress: () => void;
+  private onReturnToGame: () => void;
 
   constructor(
     onBackToMenu: () => void,
-    onResetProgress: () => void
+    onReturnToGame: () => void
   ) {
     this.onBackToMenu = onBackToMenu;
-    this.onResetProgress = onResetProgress;
+    this.onReturnToGame = onReturnToGame;
     this.container = document.createElement('div');
     this.container.id = 'level-screen';
     this.container.className = 'screen pointer-events-none flex flex-col justify-start items-center w-full h-full p-10 transition-all duration-700';
@@ -38,14 +38,14 @@ export class LevelSelectUI {
         <button id="btn-level-back" class="btn-surreal px-10 py-5 text-sm font-medium uppercase tracking-widest border border-white/10 rounded-xl hover:bg-white/5 transition-all shadow-md">
           Voltar ao Menu
         </button>
-        <button id="btn-reset-progress" class="btn-surreal px-8 py-5 text-sm font-medium uppercase tracking-widest border border-white/20 text-zinc-400 hover:text-zinc-300 hover:border-white/50 rounded-xl hover:bg-white/10 transition-all shadow-md">
-          Resetar Progresso
+        <button id="btn-return-game" class="btn-surreal px-8 py-5 text-sm font-medium uppercase tracking-widest border border-white/20 text-zinc-400 hover:text-zinc-300 hover:border-white/50 rounded-xl hover:bg-white/10 transition-all shadow-md">
+          Retornar ao Jogo
         </button>
       </div>
     `;
 
     this.container.querySelector('#btn-level-back')?.addEventListener('click', this.onBackToMenu);
-    this.container.querySelector('#btn-reset-progress')?.addEventListener('click', this.onResetProgress);
+    this.container.querySelector('#btn-return-game')?.addEventListener('click', this.onReturnToGame);
   }
 
   public getElement(): HTMLElement {

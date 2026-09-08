@@ -10,11 +10,10 @@ export interface UICallbacks {
   onOpenDiary: () => void;
   onOpenCredits: () => void;
   onBackToMenu: () => void;
-  onResetProgress: () => void;
+  onReturnToGame: () => void;
   onCloseDiary: () => void;
   onCloseCredits: () => void;
   onExitToSelector: () => void;
-  onToggleCamera: () => void;
   onToggleAudio: () => void;
   onToggleCrt: () => void;
 }
@@ -40,7 +39,7 @@ export class UIManager {
     
     this.loading = new LoadingUI();
     this.mainMenu = new MainMenuUI(callbacks.onStartGame, callbacks.onOpenDiary, callbacks.onOpenCredits);
-    this.levelSelect = new LevelSelectUI(callbacks.onBackToMenu, callbacks.onResetProgress);
+    this.levelSelect = new LevelSelectUI(callbacks.onBackToMenu, callbacks.onReturnToGame);
     this.diary = new DiaryUI(callbacks.onCloseDiary);
     this.credits = new CreditsUI(callbacks.onCloseCredits);
     this.hud = new HUDUI(callbacks.onExitToSelector);
@@ -72,14 +71,6 @@ export class UIManager {
     const bottomRight = document.createElement('div');
     bottomRight.className = 'absolute bottom-6 right-8 z-20 pointer-events-auto flex items-center gap-3';
     bottomRight.innerHTML = `
-      <!-- Camera Mode Toggle Button -->
-      <button id="btn-toggle-camera" class="camera-toggle flex items-center justify-center w-10 h-10 rounded-full border border-white/10 hover:border-white/30 text-zinc-400 hover:text-white bg-zinc-950/40 backdrop-blur transition-all duration-300 cursor-pointer shadow-lg" title="Alternar Câmera (1ª / 3ª Pessoa)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-          <circle cx="12" cy="13" r="4"/>
-        </svg>
-      </button>
-
       <!-- CRT Shader Toggle Button -->
       <button id="btn-toggle-crt" class="crt-toggle flex items-center justify-center w-10 h-10 rounded-full border border-white/10 hover:border-white/30 text-zinc-400 hover:text-white bg-zinc-950/40 backdrop-blur transition-all duration-300 cursor-pointer shadow-lg active" title="Alternar Filtro CRT">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
@@ -99,7 +90,6 @@ export class UIManager {
       </button>
     `;
 
-    bottomRight.querySelector('#btn-toggle-camera')?.addEventListener('click', callbacks.onToggleCamera);
     bottomRight.querySelector('#btn-toggle-crt')?.addEventListener('click', callbacks.onToggleCrt);
     bottomRight.querySelector('#btn-toggle-audio')?.addEventListener('click', callbacks.onToggleAudio);
     
