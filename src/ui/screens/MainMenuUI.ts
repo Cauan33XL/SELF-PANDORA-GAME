@@ -19,13 +19,13 @@ export class MainMenuUI extends BaseUIComponent {
     this.onOpenCredits = onOpenCredits;
     
     this.container.innerHTML = `
-      <div class="glass-panel menu-container flex flex-col items-center justify-between min-h-[65vh] max-w-4xl w-[95%] py-24 px-12 text-center border border-white/10 bg-black/40 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.9),inset_0_0_30px_rgba(255,255,255,0.03)] scale-100 transition-all duration-700 hover:shadow-[0_0_120px_rgba(0,0,0,1),inset_0_0_50px_rgba(255,255,255,0.06)] hover:border-white/20">
+      <div class="glass-panel menu-container flex flex-col items-center justify-between min-h-[65vh] max-w-4xl w-[95%] py-16 px-8 sm:py-24 sm:px-12 text-center border border-white/10 bg-black/40 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.9),inset_0_0_30px_rgba(255,255,255,0.03)] scale-100 transition-all duration-700 hover:shadow-[0_0_120px_rgba(0,0,0,1),inset_0_0_50px_rgba(255,255,255,0.06)] hover:border-white/20">
         
-        <div class="flex flex-col items-center w-full min-h-[160px] opacity-0">
+        <div class="flex flex-col items-center w-full min-h-[200px] sm:min-h-[240px] opacity-0">
           <!-- Espaço reservado para o título (camada superior) -->
         </div>
 
-        <div class="menu-options flex flex-col gap-6 w-[70%] max-w-[320px] my-12 mx-auto">
+        <div class="menu-options flex flex-col gap-6 w-[80%] sm:w-[70%] max-w-[320px] my-8 sm:my-12 mx-auto">
           
           <button id="btn-start-game" style="animation-delay: 0.2s" class="btn-surreal animate-[fade-in-up_0.8s_ease-out_forwards] opacity-0 relative overflow-hidden group w-full h-16 text-xl font-bold uppercase tracking-[0.4em] border border-white/40 hover:border-white rounded-[2rem] bg-white/10 hover:bg-white/20 text-white cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_0_50px_rgba(255,255,255,0.5)]">
             <span class="relative z-10 w-full h-full flex items-center justify-center gap-4">
@@ -46,7 +46,7 @@ export class MainMenuUI extends BaseUIComponent {
         </div>
         
         <div class="flex flex-col items-center w-full mt-auto mb-4" style="animation-delay: 0.8s; animation: fade-in-up 1s ease-out forwards; opacity: 0;">
-          <div class="text-[0.65rem] text-zinc-600 tracking-[0.6em] uppercase font-light">
+          <div class="text-[0.55rem] sm:text-[0.65rem] text-zinc-600 tracking-[0.6em] uppercase font-light">
             Speculum Sui, Abyssus Mentis
           </div>
           <div class="w-48 h-[1px] bg-gradient-to-r from-transparent via-zinc-500/30 to-transparent mt-6"></div>
@@ -61,18 +61,18 @@ export class MainMenuUI extends BaseUIComponent {
     this.topContainer.className = 'screen pointer-events-none flex flex-col justify-center items-center w-full h-full transition-all duration-700 absolute inset-0';
     
     this.topContainer.innerHTML = `
-      <div class="flex flex-col items-center justify-start min-h-[65vh] max-w-4xl w-[95%] py-24 px-12 text-center pointer-events-none">
-        <div class="flex flex-col items-center w-full pointer-events-auto translate-y-8">
+      <div class="flex flex-col items-center justify-start min-h-[65vh] max-w-4xl w-[95%] py-16 px-8 sm:py-24 sm:px-12 text-center pointer-events-none">
+        <div class="flex flex-col items-center w-full pointer-events-auto translate-y-4 sm:translate-y-8">
           
-          <div class="w-32 h-[2px] bg-gradient-to-r from-transparent via-white/60 to-transparent mb-12 opacity-80 animate-[fade-in-up_1s_ease-out_forwards]"></div>
+          <div class="w-24 sm:w-32 h-[2px] bg-gradient-to-r from-transparent via-white/60 to-transparent mb-8 sm:mb-12 opacity-80 animate-[fade-in-up_1s_ease-out_forwards]"></div>
           
-          <h1 class="game-title text-6xl sm:text-8xl font-black tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500 uppercase text-shadow-lg mb-6 pl-[0.4em] animate-[title-breathe_5s_ease-in-out_infinite,fade-in-up_1.2s_ease-out_forwards] opacity-0" style="font-family: 'Orbitron', sans-serif;">
+          <h1 class="game-title text-4xl sm:text-5xl md:text-6xl font-black tracking-[0.2em] sm:tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500 uppercase text-shadow-lg mb-4 sm:mb-6 pl-[0.2em] sm:pl-[0.4em] animate-[title-breathe_5s_ease-in-out_infinite,fade-in-up_1.2s_ease-out_forwards] opacity-0" style="font-family: 'Cinzel', serif;">
             O Self de Pandora
           </h1>
           
-          <div class="h-[2px] w-48 bg-gradient-to-r from-transparent via-white/30 to-transparent mb-8 mt-4 animate-[fade-in-up_1.4s_ease-out_forwards] opacity-0"></div>
+          <div class="h-[2px] w-32 sm:w-48 bg-gradient-to-r from-transparent via-white/30 to-transparent mb-6 sm:mb-8 mt-2 sm:mt-4 animate-[fade-in-up_1.4s_ease-out_forwards] opacity-0"></div>
           
-          <p class="game-subtitle font-serif italic text-zinc-400 tracking-[0.25em] text-base opacity-0 mt-8 animate-[fade-in-up_1.6s_ease-out_forwards]">
+          <p class="game-subtitle font-serif italic text-zinc-400 tracking-[0.15em] sm:tracking-[0.25em] text-sm sm:text-base opacity-0 mt-4 sm:mt-8 animate-[fade-in-up_1.6s_ease-out_forwards]">
             despertando no abismo do próprio reflexo
           </p>
         </div>

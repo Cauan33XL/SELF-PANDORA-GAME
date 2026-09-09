@@ -104,10 +104,16 @@ export class CoreRenderer {
       if (e.button === 2) this._rmb = false;
     });
 
+    document.addEventListener('mouseleave', () => {
+      this._rmb = false;
+    });
+    
+    window.addEventListener('blur', () => {
+      this._rmb = false;
+    });
+
     document.addEventListener('contextmenu', (e: Event) => {
-      if (this.container.contains(e.target as Node)) {
-        e.preventDefault();
-      }
+      e.preventDefault();
     }, { capture: true });
   }
 

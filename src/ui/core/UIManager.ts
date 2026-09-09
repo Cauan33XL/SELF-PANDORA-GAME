@@ -4,6 +4,7 @@ import { DiaryUI } from '../screens/DiaryUI';
 import { CreditsUI } from '../screens/CreditsUI';
 import { HUDUI } from '../components/HUDUI';
 import { LoadingUI } from '../screens/LoadingUI';
+import { SettingsUI } from '../screens/SettingsUI';
 
 export interface UICallbacks {
   onStartGame: () => void;
@@ -16,6 +17,9 @@ export interface UICallbacks {
   onExitToSelector: () => void;
   onToggleAudio: () => void;
   onToggleCrt: () => void;
+  onOpenSettings: () => void;
+  onCloseSettings: () => void;
+  onExitToMenu: () => void;
 }
 
 export class UIManager {
@@ -25,6 +29,7 @@ export class UIManager {
   public diary: DiaryUI;
   public credits: CreditsUI;
   public hud: HUDUI;
+  public settings: SettingsUI;
 
   private uiLayer: HTMLElement;
   private uiLayerTop: HTMLElement;
@@ -42,7 +47,8 @@ export class UIManager {
     this.levelSelect = new LevelSelectUI(callbacks.onBackToMenu, callbacks.onReturnToGame);
     this.diary = new DiaryUI(callbacks.onCloseDiary);
     this.credits = new CreditsUI(callbacks.onCloseCredits);
-    this.hud = new HUDUI(callbacks.onExitToSelector);
+    this.hud = new HUDUI(callbacks.onExitToSelector, callbacks.onOpenSettings);
+    this.settings = new SettingsUI(callbacks.onCloseSettings, callbacks.onToggleAudio, callbacks.onToggleCrt, callbacks.onExitToMenu);
 
     this.uiLayer.appendChild(this.loading.getElement());
     this.uiLayer.appendChild(this.mainMenu.getElement());
@@ -53,6 +59,7 @@ export class UIManager {
     this.uiLayer.appendChild(this.diary.getElement());
     this.uiLayer.appendChild(this.credits.getElement());
     this.uiLayer.appendChild(this.hud.getElement());
+    this.uiLayerTop.appendChild(this.settings.getElement());
 
     this.staticFooters = this.createStaticFooters();
     document.getElementById('app')?.appendChild(this.staticFooters);
@@ -78,6 +85,7 @@ export class UIManager {
     this.credits.hide();
     this.hud.hide();
     this.loading.hide();
+    this.settings.hide();
 
     if (screenName === 'menu') {
       this.mainMenu.show();
@@ -91,6 +99,8 @@ export class UIManager {
       this.hud.show();
     } else if (screenName === 'loading') {
       this.loading.show();
+    } else if (screenName === 'settings') {
+      this.settings.show();
     }
   }
 }

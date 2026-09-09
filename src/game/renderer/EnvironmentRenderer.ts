@@ -147,33 +147,33 @@ export class EnvironmentRenderer {
     };
 
     const t = new THREE.TextureLoader(manager);
-    this.realityTexture = t.load(`/textures/wall_bricks_bw.jpg`);
+    this.realityTexture = t.load(`/textures/main/wall_bricks_bw.jpg`);
     this.realityTexture.wrapS = THREE.RepeatWrapping;
     this.realityTexture.wrapT = THREE.RepeatWrapping;
     this.realityTexture.minFilter = THREE.LinearFilter;
     this.realityTexture.magFilter = THREE.LinearFilter;
-    this.reverieTexture = t.load(`/textures/wall_bricks_bw.jpg`);
+    this.reverieTexture = t.load(`/textures/main/wall_bricks_bw.jpg`);
     this.reverieTexture.wrapS = THREE.RepeatWrapping;
     this.reverieTexture.wrapT = THREE.RepeatWrapping;
     this.reverieTexture.minFilter = THREE.LinearFilter;
     this.reverieTexture.magFilter = THREE.LinearFilter;
-    this.surrealTexture3 = t.load(`/textures/wall_bricks_bw.jpg`);
+    this.surrealTexture3 = t.load(`/textures/main/wall_bricks_bw.jpg`);
     this.surrealTexture3.wrapS = THREE.RepeatWrapping;
     this.surrealTexture3.wrapT = THREE.RepeatWrapping;
     this.surrealTexture3.minFilter = THREE.LinearFilter;
     this.surrealTexture3.magFilter = THREE.LinearFilter;
-    this.surrealTexture4 = t.load(`/textures/wall_bricks_bw.jpg`);
+    this.surrealTexture4 = t.load(`/textures/main/wall_bricks_bw.jpg`);
     this.surrealTexture4.wrapS = THREE.RepeatWrapping;
     this.surrealTexture4.wrapT = THREE.RepeatWrapping;
     this.surrealTexture4.minFilter = THREE.LinearFilter;
     this.surrealTexture4.magFilter = THREE.LinearFilter;
-    this.skyDayTexture = t.load(`/textures/sky_clouds_bw_pano.jpg`);
+    this.skyDayTexture = t.load(`/textures/main/sky_clouds_bw_pano.jpg`);
     this.skyDayTexture.wrapS = THREE.RepeatWrapping;
     this.skyDayTexture.wrapT = THREE.RepeatWrapping;
     this.skyDayTexture.repeat.set(6, 4);
     this.skyDayTexture.minFilter = THREE.LinearFilter;
     this.skyDayTexture.magFilter = THREE.LinearFilter;
-    this.skyNightTexture = t.load(`/textures/sky_clouds_bw_pano.jpg`);
+    this.skyNightTexture = t.load(`/textures/main/sky_clouds_bw_pano.jpg`);
     this.skyNightTexture.wrapS = THREE.RepeatWrapping;
     this.skyNightTexture.wrapT = THREE.RepeatWrapping;
     this.skyNightTexture.repeat.set(6, 4);
@@ -214,7 +214,7 @@ export class EnvironmentRenderer {
     this.skySphere.position.set(240, -160, 0); 
     this.scene.add(this.skySphere);
     
-    const grass = new THREE.TextureLoader().load(`/textures/floor_grass_bw.jpg`);
+    const grass = new THREE.TextureLoader().load(`/textures/main/floor_grass_bw.jpg`);
     grass.wrapS = THREE.RepeatWrapping;
     grass.wrapT = THREE.RepeatWrapping;
     grass.repeat.set(450, 450);

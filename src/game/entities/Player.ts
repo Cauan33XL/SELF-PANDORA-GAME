@@ -76,10 +76,10 @@ export class Player {
 
   update(keys: Record<string, boolean>, cameraAngle: number = 0) {
     const audio = AudioManager.getInstance();
-    const left = keys.KeyA || keys.ArrowLeft;
-    const right = keys.KeyD || keys.ArrowRight;
-    const up = keys.KeyW || keys.ArrowUp;
-    const down = keys.KeyS || keys.ArrowDown;
+    const left = keys.KeyA;
+    const right = keys.KeyD;
+    const up = keys.KeyW;
+    const down = keys.KeyS;
 
     let inputX = 0;
     let inputY = 0;

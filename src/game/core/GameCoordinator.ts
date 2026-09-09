@@ -74,11 +74,11 @@ export class GameCoordinator {
       onToggleAudio: () => {
         this.audioManager.init();
         const isMuted = this.audioManager.toggleMute();
-        const toggleAudioBtn = document.getElementById('btn-toggle-audio');
-        if (toggleAudioBtn) {
-          toggleAudioBtn.innerHTML = isMuted
-            ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 text-zinc-500"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
-            : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 text-white shadow-[0_0_8px_rgba(255,255,255,0.4)]"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
+        const audioIconContainer = document.getElementById('audio-icon-container');
+        if (audioIconContainer) {
+          audioIconContainer.innerHTML = isMuted
+            ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5 text-zinc-500"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`
+            : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5 text-white shadow-[0_0_8px_rgba(255,255,255,0.4)]"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`;
         }
       },
       onToggleCrt: () => {
@@ -88,6 +88,16 @@ export class GameCoordinator {
           const isActive = crtOverlay.classList.toggle('crt-active');
           toggleCrtBtn.classList.toggle('active', isActive);
         }
+      },
+      onOpenSettings: () => {
+        this.showScreen('settings');
+      },
+      onCloseSettings: () => {
+        this.showScreen('hud');
+      },
+      onExitToMenu: () => {
+        this.clearWorld();
+        this.showScreen('menu');
       }
     });
 
@@ -344,8 +354,24 @@ export class GameCoordinator {
 
     this.physicsWorld.step();
 
+    // Camera rotation via Arrow keys (Accessibility)
+    const camSensitivity = 0.035;
+    if (this.keys['ArrowLeft']) this.renderer.pandoraRenderer.cameraOrbitYaw += camSensitivity;
+    if (this.keys['ArrowRight']) this.renderer.pandoraRenderer.cameraOrbitYaw -= camSensitivity;
+    if (this.keys['ArrowUp']) {
+      this.renderer.pandoraRenderer.cameraOrbitPitch = Math.max(
+        0.05,
+        Math.min(Math.PI / 2 - 0.05, this.renderer.pandoraRenderer.cameraOrbitPitch + camSensitivity)
+      );
+    }
+    if (this.keys['ArrowDown']) {
+      this.renderer.pandoraRenderer.cameraOrbitPitch = Math.max(
+        0.05,
+        Math.min(Math.PI / 2 - 0.05, this.renderer.pandoraRenderer.cameraOrbitPitch - camSensitivity)
+      );
+    }
+
     this.player.update(this.keys, this.renderer.pandoraRenderer.cameraOrbitYaw);
-    
     this.levelManager.worldPlatforms.forEach((p) => {
       if (p.origX === undefined) p.origX = p.x;
       if (p.origY === undefined) p.origY = p.y;
